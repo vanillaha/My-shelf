@@ -1,0 +1,1 @@
+create index if not exists idx_user_id on items(user_id);
