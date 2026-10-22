@@ -1,5 +1,8 @@
  export function renderList(items) {
-    document.getElementById('list').innerHTML = items.map(i => `<li>${i.name}.${i.year}</li>`).join('');
+    document.getElementById('list').innerHTML = items.map(i => `<li>${i.name}${i.year ? '·' + i.year: ''}
+      <button class = "edit-btn" data-id = "${i.id}">改</button>
+      </li>`)
+      .join('');
  }
 
  export function renderStatus(loading) {

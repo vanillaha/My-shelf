@@ -3,13 +3,18 @@ const subs = [];
 function subscribeLoading(fn) { subs.push(fn); }
 function notify() { subs.forEach(fn => fn(count > 0)); }
 
-async function request(path) {
+async function request(path,options={}) {
     count += 1;
     notify();
     try {
         let res;
         try {
-            res = await fetch(path);
+            res = await fetch(path,{
+                headers: {
+                    'content-type': 'application/json'
+                },
+                ...options
+            });
         } catch {
             throw new Error('服务连接失败，请检查后端是否已启动');
         }
@@ -23,7 +28,15 @@ async function request(path) {
     }
 }
 
-export { request, subscribeLoading };
+export { subscribeLoading };
 export const listItems = (page=1,limit=20)=>{
     return request(`/api/items?page=${page}&limit=${limit}`)
+}
+
+export const createItem = (name)=>{
+    return request('/api/items',{method:'POST',body:JSON.stringify({name})})
+}
+
+export const editItem = (id,name)=>{
+    return request(`/api/items/${id}`,{method:'PATCH',body:JSON.stringify({name})})
 }
