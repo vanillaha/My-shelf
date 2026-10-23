@@ -9,10 +9,15 @@ app.use(express.json())
 app.get('/api/items',async (req,res) => {
     const limit = Math.min(Number(req.query.limit||20),100);
     const page = Math.max(Number(req.query.page||1),1);
+    const q = (req.query.q||'').trim();
 
     const offset = (page-1)*limit;
     const starttime = Date.now();
-    const {rows} = await pool.query('SELECT * FROM items order by id desc limit $1 offset $2',[limit,offset]);
+    const {rows} = await pool.query(
+        q 
+        ? `SELECT * FROM items where name ilike $1 order by id desc limit $2 offset $3`
+        : 'SELECT * FROM items order by id desc limit $1 offset $2',
+        q ? [`%${q}%`,limit,offset] : [limit,offset]);
     const endtime = Date.now();
     
     console.log(`查询第${page}页，limit=${limit}，耗时：${endtime-starttime}ms`);
@@ -41,6 +46,20 @@ app.patch('/api/items/:id',async(req,res)=>{
 
     const {rows} = await pool.query('update items set name = $1 where id = $2 returning *',[String(name).trim(),id]);
     res.status(201).json(rows[0])
+})
+
+app.delete('/api/items/:id',async(req,res)=>{
+    const id = Number(req.params.id);
+    if(!Number.isInteger(id)||id<0){
+        return res.status(400).json({error: 'id不合法'});
+    }
+    const {rowCount} = await pool.query('delete from items where id = $1',[id]);
+    
+    if(rowCount===0){
+        return res.status(404).json({error: '找不到记录'});
+    }
+
+    res.status(204).end()
 })
 
 app.listen(port,()=> {

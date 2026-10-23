@@ -1,5 +1,5 @@
 import { renderList, renderStatus, renderError } from './ui.js';
-import { listItems ,subscribeLoading, createItem, editItem } from './api.js';
+import { listItems ,subscribeLoading, createItem, editItem, deleteItem } from './api.js';
 import { store, subscribe, setState } from './store.js';
 
 subscribe(() => {
@@ -14,9 +14,17 @@ subscribeLoading(busy => {
     renderStatus(busy);
 });
 
-async function getData(){
+function debounce(fn,ms){
+    let t;
+    return (...arg)=>{
+        clearTimeout(t);
+        t = setTimeout(()=>fn(...arg),ms);
+    };
+}
+
+async function getData(q=''){
     try{
-        const {data} = await listItems();
+        const {data} = await listItems(1,20,q);
         setState({ items: data,error: ''});
     } catch (error) {
         setState({ items: [],error: error.message });
@@ -48,3 +56,22 @@ document.getElementById('list').addEventListener('click',async(e)=>{
     await editItem(id,name);
     getData();
 })
+
+document.getElementById('list').addEventListener('click',async(e)=>{
+    const btn = e.target.closest('.delete-btn')
+    if(!btn) return;
+    if(!confirm('确定删除吗？')) return;
+    const id = Number(btn.dataset.id);
+
+    try{
+        await deleteItem(id);
+        getData();
+    } catch(error){
+        alert(`删除失败，错误信息：${error}`);
+    }
+    
+})
+
+document.getElementById("search-input").addEventListener('input',debounce((e)=>{
+    getData(e.target.value);
+},300));

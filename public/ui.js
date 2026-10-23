@@ -1,6 +1,7 @@
  export function renderList(items) {
     document.getElementById('list').innerHTML = items.map(i => `<li>${i.name}${i.year ? '·' + i.year: ''}
       <button class = "edit-btn" data-id = "${i.id}">改</button>
+      <button class = "delete-btn" data-id = "${i.id}">删除</button>
       </li>`)
       .join('');
  }

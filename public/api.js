@@ -21,6 +21,11 @@ async function request(path,options={}) {
         if (!res.ok) {
             throw new Error(`请求失败（HTTP ${res.status}）`);
         }
+
+        if(res.status===204){
+            return null;
+        }
+
         return await res.json();
     } finally {
         count -= 1;
@@ -29,8 +34,8 @@ async function request(path,options={}) {
 }
 
 export { subscribeLoading };
-export const listItems = (page=1,limit=20)=>{
-    return request(`/api/items?page=${page}&limit=${limit}`)
+export const listItems = (page=1,limit=20,q='')=>{
+    return request(`/api/items?page=${page}&limit=${limit}&q=${encodeURIComponent(q)}`)
 }
 
 export const createItem = (name)=>{
@@ -39,4 +44,8 @@ export const createItem = (name)=>{
 
 export const editItem = (id,name)=>{
     return request(`/api/items/${id}`,{method:'PATCH',body:JSON.stringify({name})})
+}
+
+export const deleteItem = (id)=>{
+    return request(`/api/items/${id}`,{method:'DELETE'})
 }
