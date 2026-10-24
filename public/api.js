@@ -49,3 +49,4 @@ export const editItem = (id,name)=>{
 export const deleteItem = (id)=>{
     return request(`/api/items/${id}`,{method:'DELETE'})
 }
+

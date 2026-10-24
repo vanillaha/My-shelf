@@ -16,10 +16,12 @@ subscribeLoading(busy => {
 
 function debounce(fn,ms){
     let t;
-    return (...arg)=>{
+    const wrapped = (...arg)=>{
         clearTimeout(t);
         t = setTimeout(()=>fn(...arg),ms);
     };
+    wrapped.cancel = ()=> clearTimeout(t);   // 供外部取消还没触发的防抖
+    return wrapped;
 }
 
 async function getData(q=''){
@@ -72,6 +74,16 @@ document.getElementById('list').addEventListener('click',async(e)=>{
     
 })
 
-document.getElementById("search-input").addEventListener('input',debounce((e)=>{
-    getData(e.target.value);
-},300));
+const debouncedSearch = debounce((q)=>{
+    getData(q);
+},300);
+
+document.getElementById("search-input").addEventListener('input',(e)=>{
+    debouncedSearch(e.target.value);
+});
+
+document.getElementById("search-form").addEventListener('submit',(e)=>{
+    e.preventDefault();
+    debouncedSearch.cancel();   // 按钮点了，就取消还没触发的防抖，立刻搜
+    getData(document.getElementById("search-input").value);
+})
