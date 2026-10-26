@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../src/db');
 (async () => {
     try {
         const {rows} = await pool.query('SELECT count(*)::int as n FROM items');

@@ -2,22 +2,24 @@
   "name": "myshelf",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js",
-  "migrate": "node scripts/migrate.js",
-  "check": "node scripts/check.js",
-  "import": "node scripts/import.js",
-  "generate": "node scripts/generate.js"
+    "start": "node src/server.js",
+    "migrate": "node scripts/migrate.js",
+    "check": "node scripts/check.js",
+    "import": "node scripts/import.js",
+    "generate": "node scripts/generate.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^18.0.7",
     "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const pool = require('../db');
+const pool = require('../src/db');
 
 const dir = fs.readFileSync('E:\\Project\\myshelf\\data\\books_10000.csv','utf-8').split('\r\n').filter(l => l.trim()!='').slice(1);
 //console.log(dir);
