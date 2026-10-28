@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form id = "register">
+        <input id="email" type="email" placeholder="邮箱">
+        <input id="pw" type="password" placeholder="密码">
+        <button>注册</button>
+    </form>
+
+    <script>
+        document.getElementById("register").addEventListener('submit',async(e)=>{
+            e.preventDefault();
+
+            const res = await fetch('/api/auth/register',{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({
+                    email: document.getElementById('email').value,
+                    pw: document.getElementById('pw').value,
+                }),
+            });
+
+            const data = await res.json();
+            if(res.ok) location.href = '/';
+            else alert(data.error||'注册失败');
+        })
+
+    </script>
+</body>
+</html>

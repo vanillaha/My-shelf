@@ -9,10 +9,13 @@ const requireAuth = require('./middleware/auth')
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'..', 'public')));
 app.use(express.json());
-app.use('/api/items',requireAuth);
 app.use('/api/auth',require('./routes/auth'));
 
-app.get('/api/items',async (req,res) => {
+app.get('/api/me',requireAuth,(req,res)=>{
+    res.json({id: req.userId})
+})
+
+app.get('/api/items',requireAuth,async (req,res) => {
     const limit = Math.min(Number(req.query.limit||20),100);
     const page = Math.max(Number(req.query.page||1),1);
     const q = (req.query.q||'').trim();
@@ -32,14 +35,14 @@ app.get('/api/items',async (req,res) => {
 })
 
 //插入
-app.post('/api/items',async(req,res)=>{
+app.post('/api/items',requireAuth,async(req,res)=>{
     const {name} = req.body;
     const {rows} = await pool.query('INSERT INTO items(name,user_id) VALUES($1,$2) RETURNING *',[name,req.userId]);
     res.status(201).json(rows[0]);
 })
 
 //编辑
-app.patch('/api/items/:id',async(req,res)=>{
+app.patch('/api/items/:id',requireAuth,async(req,res)=>{
     const id = req.params.id;
     if(!Number.isInteger(Number(id))){
         return res.status(400).json({error: 'id不合法'});
@@ -58,7 +61,7 @@ app.patch('/api/items/:id',async(req,res)=>{
     res.status(200).json(rows[0])
 })
 
-app.delete('/api/items/:id',async(req,res)=>{
+app.delete('/api/items/:id',requireAuth,async(req,res)=>{
     const id = Number(req.params.id);
     if(!Number.isInteger(id)||id<0){
         return res.status(400).json({error: 'id不合法'});

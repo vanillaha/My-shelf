@@ -15,7 +15,21 @@
         <input id="name-input" placeholder="书名">
         <button type="submit">添加</button>
     </form>
+    <form id="logout">
+        <button>退出</button>
+    </form>
     <ul id="list"></ul>
     <script type="module" src="main.js"></script>
+    <script>
+        document.getElementById('logout').addEventListener('click',async(e)=>{
+            e.preventDefault();
+            if(!confirm('确定要退出当前账户吗？')) return;
+
+            const res = await fetch('/api/auth/logout',{
+                method:'POST',
+            });
+            location.href = '/login.html';
+        })
+    </script>
 </body>
 </html>

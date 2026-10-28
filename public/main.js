@@ -25,6 +25,13 @@ function debounce(fn,ms){
 }
 
 async function getData(q=''){
+    const meRes = await fetch('/api/me');
+
+    if(meRes.status===401){
+        location.href = '/login.html'; 
+        return;
+    }
+
     try{
         const {data} = await listItems(1,20,q);
         setState({ items: data,error: ''});
