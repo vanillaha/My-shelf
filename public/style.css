@@ -1,0 +1,157 @@
+/* ============================================================
+   My Shelf 全站样式
+   结构说明：
+   1. 全局变量与基础重置
+   2. 表单控件的统一外观（三个页面共用）
+   3. 登录 / 注册页（body.auth）：居中卡片布局
+   4. 首页 index.html：顶栏 + 列表
+   ============================================================ */
+
+/* ---------- 1. 全局变量与基础重置 ---------- */
+:root {
+    /* 换主题色只需要改这里，全站跟着变 */
+    --accent: #185fa5;        /* 主色：按钮、标题 */
+    --accent-dark: #114779;   /* 主色加深：按钮悬停 */
+    --bg: #f3f5f8;            /* 页面背景 */
+    --card: #ffffff;          /* 卡片背景 */
+    --line: #dfe4ea;          /* 边框 */
+    --text: #22303c;          /* 正文 */
+    --muted: #6b7a88;         /* 次要文字 */
+}
+
+* {
+    box-sizing: border-box;   /* 让 width 包含 padding 和边框，算尺寸更直观 */
+    margin: 0;
+}
+
+body {
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* ---------- 2. 表单控件的统一外观 ---------- */
+input,
+button {
+    font: inherit;            /* 跟随页面字体，否则控件会显得小一号 */
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+}
+
+input:focus {
+    outline: none;            /* 去掉默认的蓝色轮廓，换成下面的边框变色 */
+    border-color: var(--accent);
+}
+
+button {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s;  /* 悬停时的颜色渐变 */
+}
+
+button:hover {
+    background: var(--accent-dark);
+}
+
+/* ---------- 3. 登录 / 注册页：整页居中的卡片 ---------- */
+body.auth {
+    /* Flexbox 布局：把子元素在视口里水平垂直都居中 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.auth form {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px;
+    width: min(340px, 90vw);  /* 手机上不超过屏幕宽度的 90% */
+    /* 后一个 form（登录页的"去注册"）垂直堆叠时留出间距 */
+    margin: 8px 0;
+}
+
+/* 让卡片里的输入框和按钮竖着排满一行 */
+body.auth input,
+body.auth button {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+/* "没有账号，注册一个" 这种次要按钮，做成描边样式弱化它 */
+#register button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#register button:hover {
+    background: none;
+    color: var(--accent);
+}
+
+/* ---------- 4. 首页：容器 + 顶栏 + 列表 ---------- */
+#status {
+    text-align: center;
+    color: var(--muted);
+    padding: 12px;
+}
+
+#search-form,
+#create-form {
+    /* 两个工具条：输入框撑满剩余宽度，按钮固定宽 */
+    display: flex;
+    gap: 8px;
+    max-width: 640px;
+    margin: 0 auto 12px;
+    padding: 0 16px;
+}
+
+#search-form input,
+#create-form input {
+    flex: 1;                  /* 占满一行里剩下的空间 */
+}
+
+#logout {
+    /* 退出按钮：居中放在页面底部的小字按钮 */
+    max-width: 640px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#logout button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+#logout button:hover {
+    color: var(--accent);
+    background: none;
+}
+
+#list {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 16px;
+    list-style: none;         /* 去掉 ul 默认的圆点 */
+}
+
+#list li {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);  /* 一点点浮起的感觉 */
+}
