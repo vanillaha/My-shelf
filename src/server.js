@@ -76,6 +76,14 @@ app.delete('/api/items/:id',requireAuth,async(req,res)=>{
     res.status(204).end()
 })
 
-app.listen(port,()=> {
+app.get('/api/ping',async(req,res)=>{
+    res.json({ok:true});
+})
+
+if(require.main===module){
+    app.listen(port,()=> {
     console.log(`Server listening at http://localhost:${port}`);
 })
+}
+
+module.exports = app;

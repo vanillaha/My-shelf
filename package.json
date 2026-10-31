@@ -8,7 +8,9 @@
     "migrate": "node scripts/migrate.js",
     "check": "node scripts/check.js",
     "import": "node scripts/import.js",
-    "generate": "node scripts/generate.js"
+    "generate": "node scripts/generate.js",
+    "test": "vitest",
+    "test:run":"vitest run"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,6 @@
   },
   "devDependencies": {
     "supertest": "^7.3.1",
-    "vitest": "^5.0.4"
+    "vitest": "^5.0.5"
   }
 }

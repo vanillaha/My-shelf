@@ -1,5 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+
+require('dotenv').config();
+if (process.argv.includes('--test')) {
+    process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
+
 const pool =require('../src/db');
 
 const dir = path.join(__dirname, '..', 'migrations');
