@@ -38,7 +38,12 @@ app.get('/api/items',requireAuth,async (req,res) => {
 //插入
 app.post('/api/items',requireAuth,async(req,res)=>{
     const {name} = req.body;
-    const {rows} = await pool.query('INSERT INTO items(name,user_id) VALUES($1,$2) RETURNING *',[name,req.userId]);
+
+    if (!name || !String(name).trim()) {
+        return res.status(400).json({ error: '标题不能为空' });
+    }
+
+    const {rows} = await pool.query('INSERT INTO items(name,user_id) VALUES($1,$2) RETURNING *',[String(name).trim(),req.userId]);
     res.status(201).json(rows[0]);
 })
 

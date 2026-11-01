@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # CI 环境里没有你本地的 PostgreSQL，这里起一个一次性的
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: myshelf_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # vitest.config.js 会把 DATABASE_URL 指向 TEST_DATABASE_URL
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/myshelf_test
+      # CI 专用的假密钥，不是你的真实密钥
+      JWT_SECRET: ci-only-dummy-secret
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 建表（迁移到测试库）
+        run: node scripts/migrate.js --test
+
+      - name: 跑测试
+        run: npm run test:run

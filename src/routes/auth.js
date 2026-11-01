@@ -7,9 +7,10 @@ require('dotenv').config();
 router.post('/register',async(req,res)=>{
     const {email,pw} = req.body||{};
 
-    if(!email||!pw||pw.length<8){
-        return res.status(400).json({error:'邮箱或密码不合法!'});
-    }
+   if (typeof email !== 'string' || typeof pw !== 'string' || !pw.trim() || pw.length < 8) {
+    return res.status(400).json({ error: '邮箱或密码不合法!' });
+}
+
 
     const hash = await bcrypt.hash(pw,10);
 
