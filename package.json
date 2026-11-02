@@ -10,7 +10,7 @@
     "import": "node scripts/import.js",
     "generate": "node scripts/generate.js",
     "test": "vitest",
-    "test:run":"vitest run"
+    "test:run": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +22,10 @@
     "dotenv": "^18.0.7",
     "express": "^5.3.0",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "pino-pretty": "^13.2.0"
   },
   "devDependencies": {
     "supertest": "^7.3.1",

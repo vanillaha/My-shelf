@@ -6,6 +6,24 @@ const pool = require('./db');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const requireAuth = require('./middleware/auth')
+const logger = require('./logger');
+
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  res.on('finish', () => {          // ① 响应真正发出去的那一刻才触发
+    logger.info({
+      method: req.method,
+      path:   req.originalUrl,
+      status: res.statusCode,
+      ms:     Date.now() - start,
+      userId: req.userId ?? null     // ② auth 中间件算出来的，此时已经存在了
+    }, 'request');                   // 'request' 是这条日志的标签
+  });
+
+  next();
+});
+
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'..', 'public')));
