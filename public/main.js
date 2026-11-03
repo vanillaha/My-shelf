@@ -1,5 +1,5 @@
-import { renderList, renderStatus, renderError } from './ui.js';
-import { listItems ,subscribeLoading, createItem, editItem, deleteItem } from './api.js';
+import { renderList, renderStatus, renderError,renderReportsummary,exportReport } from './ui.js';
+import { listItems ,subscribeLoading, createItem, editItem, deleteItem, getReportsummary } from './api.js';
 import { store, subscribe, setState } from './store.js';
 
 subscribe(() => {
@@ -94,3 +94,13 @@ document.getElementById("search-form").addEventListener('submit',(e)=>{
     debouncedSearch.cancel();   // 按钮点了，就取消还没触发的防抖，立刻搜
     getData(document.getElementById("search-input").value);
 })
+
+document.getElementById('btn-report').addEventListener('click', async () => {
+  try {
+    const data = await getReportsummary();
+    renderReportsummary(data);
+  } catch (e) {
+    document.getElementById('report').innerHTML = `<p>${e.message}</p>`;
+  }
+});
+

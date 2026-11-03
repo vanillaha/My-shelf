@@ -103,6 +103,51 @@ app.get('/api/ping',async(req,res)=>{
     res.json({ok:true});
 })
 
+app.get('/api/report/summary',requireAuth,async(req,res)=>{
+    const userId = req.userId;
+    const yearStart = new Date().getFullYear() + '-01-01';
+
+    const [
+    big,      // ① 总数 / 平均分 / 看完数
+    top5,     // ② 评分最高 5 部
+    type,     // ⑤ 类别占比
+    status,   // ⑥ 状态分布
+    recent,   // ⑦ 今年收藏列表
+  ] = await Promise.all([
+    pool.query(
+        `select count(*) as total,
+        round(avg(score),2) as avg_score,
+        count(*) filter (where status='看完') as done_count from items
+        where user_id=$1`, [userId]),
+
+    pool.query(`select id,name,type,year,score from items
+                where user_id=$1 and score is not null
+                order by score desc, id asc limit 5`, [userId]),
+
+    pool.query(`select type, count(*) as n from items
+                where user_id=$1 group by type order by n desc`, [userId]),
+
+    pool.query(`select status, count(*) as n from items
+                where user_id=$1 group by status order by n desc`, [userId]),
+
+    pool.query(`select id,name,type,status,created_at from items
+                where user_id=$1 and created_at >= $2
+                order by created_at desc`, [userId, yearStart]),
+    ]); 
+
+    res.json({
+        total: big.rows[0].total,
+        avgScore: big.rows[0].avg_score,
+        donePct: big.rows[0].total
+            ? Math.round(big.rows[0].done_count / big.rows[0].total * 100)
+            : 0,
+        top5: top5.rows,
+        byType: type.rows,
+        byStatus: status.rows,
+        recent: recent.rows
+    });
+})
+
 if(require.main===module){
     app.listen(port,()=> {
     console.log(`Server listening at http://localhost:${port}`);

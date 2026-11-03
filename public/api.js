@@ -50,3 +50,6 @@ export const deleteItem = (id)=>{
     return request(`/api/items/${id}`,{method:'DELETE'})
 }
 
+export const getReportsummary =()=>{
+  return request('/api/report/summary');
+}
